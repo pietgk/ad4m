@@ -20,14 +20,12 @@ pub fn _log_dev_path() -> PathBuf {
     data_path().join("ad4m.log")
 }
 
-#[cfg(feature = "custom-protocol")]
+// Window URLs are paths for `WebviewUrl::App`: Tauri resolves them against `build.devUrl`
+// in `tauri dev` and against the bundled frontend otherwise. Never a full URL: in dev, an
+// origin other than devUrl's (even 127.0.0.1 for localhost) is a remote page to Tauri's
+// ACL, which then denies the app's own commands (`get_port`, `request_credential`).
 pub fn app_url() -> String {
     "index.html".to_string()
-}
-
-#[cfg(not(feature = "custom-protocol"))]
-pub fn app_url() -> String {
-    "http://127.0.0.1:3000".to_string()
 }
 
 #[cfg(feature = "custom-protocol")]
@@ -37,7 +35,7 @@ pub fn app_tray_message_url() -> String {
 
 #[cfg(not(feature = "custom-protocol"))]
 pub fn app_tray_message_url() -> String {
-    "http://127.0.0.1:3000/tray_message".to_string()
+    "tray_message".to_string()
 }
 
 pub fn executor_port_path() -> PathBuf {
